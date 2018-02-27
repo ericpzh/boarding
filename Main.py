@@ -5,15 +5,13 @@ import numpy as np
 import random as rnd
 import math
 
-
-
 ##INPUT##
 RowMax = 6
 RowNum = 29
 NoShow = int(round(np.random.normal(RowMax*RowNum*0.1,5,1)[0]))
 ts_ave = 10
 ts_std = 5
-reflashRate = 1000
+reflashRate = 1
 #########
 
 def main():
@@ -91,7 +89,30 @@ def pos(Queue):
 
 # Print
 def PrintPlane(plane):
-    print(plane)
+    array = []
+    for i in range(len(plane)):
+        if(i == 0):
+            array.append(list(plane[int(round(RowMax/2))]))
+        elif(i == int(round(RowMax/2))):
+            array.append(list(plane[0]))
+        else:
+            array.append(list(plane[i]))
+    ret = [[ "-" for y in range(len(plane[0]))] for x in range(len(plane))]
+    for i in range(len(plane)):
+        for j in range(len(plane[0])):
+            if(array[i][j] == 1):
+                ret[i][j] = "O"
+            elif(array[i][j] != 0):
+                ret[i][j] = "o"
+    for i in ret:
+        print(i)
+    div = "-"
+    for i in range(RowNum*5):
+        div += "-"
+        if(i == int(RowNum*5/2)):
+            div += "B737-800"
+    print(div)
+
 
 # Report
 print("Total Time is:" + str(main()))
