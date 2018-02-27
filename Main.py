@@ -5,7 +5,7 @@ import numpy as np
 import random as rnd
 import math
 import PIL
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ##INPUT##
 RowMax = 6
@@ -27,9 +27,9 @@ def main():
     Queue.sort()
 
     #Random process
-    Queue = simple_rnd(Queue)
+    #Queue = simple_rnd(Queue)
     #Queue = group(Queue,5)
-    #Queue = rev(Queue)
+    Queue = rev(Queue)
     #Queue = pos(Queue)
 
     #Forming aircraft
@@ -116,29 +116,47 @@ def PrintPlane(plane,CLK):
             div += "B737-800 Time:"
             div += str(CLK)
     output += (str(div)  + '\n')
-    print(output)
-    #Save Image
-    img = PIL.Image.new("RGB", ((RowMax+1)*10,(RowNum+1)*10), color=0)
+    #print(output)
+    img = PIL.Image.new("RGBA", ((RowMax+1)*50,(RowNum+1)*50), color=0)
     for i in range((RowMax+1)):
         for j in range((RowNum+1)):
             string = ret[i][j]
             if(string == "-"):
-                for x in range(10):
-                    for y in range (10):
-                        img.putpixel((i*10+x,j*10+y),(153, 255, 153))
+                for x in range(50):
+                    for y in range (50):
+                        img.putpixel((i*50+x,j*50+y),(255, 255, 255))
             elif(string == "o"):
-                for x in range(10):
-                    for y in range(10):
-                        img.putpixel((i * 10 + x, j * 10 + y), (51, 102, 255))
+                for x in range(-25,25):
+                    for y in range(-25,25):
+                        if ((x)**2+(y)**2 <= 225):
+                            img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (51, 102, 255))
+                        else:
+                            img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (255, 255, 255))
             else:
-                for x in range(10):
-                    for y in range(10):
-                        img.putpixel((i * 10 + x, j * 10 + y), (0, 0, 102))
-    img.save(str(CLK)+".png") #edit custom name here
+                for x in range(-25,25):
+                    for y in range(-25,25):
+                        if ((x ) ** 2 + (y ) ** 2 <= 225):
+                            img.putpixel((i*50+x+ 25,j*50+y+ 25),(0, 0, 102))
+                        else:
+                            img.putpixel((i * 50 + x+ 25, j * 50 + y+ 25), (255, 255, 255))
+    img2 = img.rotate(90,expand=1)
+    img2 = img2.resize(((RowNum+1)*50-50,(RowMax+1)*50-30))
+    imgb = Image.open("BG.png")
+    imgb = imgb.convert("RGBA")
+    tmp = Image.new('RGBA', imgb.size, (0, 0, 0, 0))
+    tmp.paste(img2, (435, 285))
+    tmp.putalpha(127)
+    imgb = Image.alpha_composite(imgb, tmp)
+    imgb = imgb.resize((2000,800))
+    imgb.save(str(CLK)+".png")
 
 # Report
 print("Total Time is:" + str(main()))
 
+#ave = []
+#for i in range(100):
+    #ave.append(main())
+#print(sum(ave)/100)
 
 
 
