@@ -4,6 +4,10 @@
 import numpy as np
 import random as rnd
 import math
+import PIL
+from PIL import Image
+
+
 
 ##INPUT##
 RowMax = 6
@@ -11,7 +15,7 @@ RowNum = 29
 NoShow = int(round(np.random.normal(RowMax*RowNum*0.1,5,1)[0]))
 ts_ave = 10
 ts_std = 5
-reflashRate = 1
+reflashRate = 15
 #########
 
 def main():
@@ -56,7 +60,7 @@ def main():
         borading_idx += 1
       CLK += 1
       if(CLK%reflashRate==0):
-          PrintPlane(plane)
+          PrintPlane(plane,CLK)
     return(CLK)
 
 #Random Processes
@@ -88,7 +92,7 @@ def pos(Queue):
     return Queue
 
 # Print
-def PrintPlane(plane):
+def PrintPlane(plane,CLK):
     array = []
     for i in range(len(plane)):
         if(i == 0):
@@ -104,16 +108,34 @@ def PrintPlane(plane):
                 ret[i][j] = "O"
             elif(array[i][j] != 0):
                 ret[i][j] = "o"
+    output = ""
     for i in ret:
-        print(i)
+        output += (str(i) + '\n')
     div = "-"
     for i in range(RowNum*5):
         div += "-"
         if(i == int(RowNum*5/2)):
-            div += "B737-800"
-    print(div)
-
-
+            div += "B737-800 Time:"
+            div += str(CLK)
+    output += (str(div)  + '\n')
+    print(output)
+    img = PIL.Image.new("RGB", ((RowMax+1)*10,(RowNum+1)*10), color=0)
+    for i in range((RowMax+1)):
+        for j in range((RowNum+1)):
+            string = ret[i][j]
+            if(string == "-"):
+                for x in range(10):
+                    for y in range (10):
+                        img.putpixel((i*10+x,j*10+y),(153, 255, 153))
+            elif(string == "o"):
+                for x in range(10):
+                    for y in range(10):
+                        img.putpixel((i * 10 + x, j * 10 + y), (51, 102, 255))
+            else:
+                for x in range(10):
+                    for y in range(10):
+                        img.putpixel((i * 10 + x, j * 10 + y), (0, 0, 102))
+    img.save(str(CLK)+".png")
 # Report
 print("Total Time is:" + str(main()))
 
