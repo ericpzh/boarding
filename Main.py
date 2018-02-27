@@ -7,8 +7,6 @@ import math
 import PIL
 from PIL import Image
 
-
-
 ##INPUT##
 RowMax = 6
 RowNum = 29
@@ -119,6 +117,7 @@ def PrintPlane(plane,CLK):
             div += str(CLK)
     output += (str(div)  + '\n')
     print(output)
+    #Save Image
     img = PIL.Image.new("RGB", ((RowMax+1)*10,(RowNum+1)*10), color=0)
     for i in range((RowMax+1)):
         for j in range((RowNum+1)):
@@ -135,7 +134,8 @@ def PrintPlane(plane,CLK):
                 for x in range(10):
                     for y in range(10):
                         img.putpixel((i * 10 + x, j * 10 + y), (0, 0, 102))
-    img.save(str(CLK)+".png")
+    img.save(str(CLK)+".png") #edit custom name here
+
 # Report
 print("Total Time is:" + str(main()))
 
