@@ -19,7 +19,7 @@ RowNum = 9
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
 ts_ave = 1
 ts_std = 0
-reflashRate = 10
+reflashRate = 1
 #########
 
 def main():
@@ -45,7 +45,7 @@ def main():
     borading_idx = 0
     CLK = 0
     passenger = len(Queue)
-    while np.count_nonzero(plane == 1) < passenger or list(plane[0]).count(0) < RowNum or list(plane[len(plane)-1]).count(0) < RowNum:
+    while np.count_nonzero(plane == 1) != passenger or list(plane[0]).count(0) != len(plane[0]) or list(plane[len(plane)-1]).count(0) != len(plane[0]):
       for row in range(RowNum+1):#update_borading
         #Left Isle
         isle1 = float(plane[0][row])
