@@ -6,6 +6,11 @@ import random as rnd
 import math
 import PIL
 from PIL import Image, ImageDraw
+import imageio as io
+import shutil
+import pathlib
+import glob
+
 
 ##INPUT##
 RowMax = 6
@@ -13,7 +18,7 @@ RowNum = 29
 NoShow = int(round(np.random.normal(RowMax*RowNum*0.1,5,1)[0]))
 ts_ave = 10
 ts_std = 5
-reflashRate = 15
+reflashRate = 100
 #########
 
 def main():
@@ -28,8 +33,8 @@ def main():
 
     #Random process
     #Queue = simple_rnd(Queue)
-    #Queue = group(Queue,5)
-    Queue = rev(Queue)
+    Queue = group(Queue,5)
+    #Queue = rev(Queue)
     #Queue = pos(Queue)
 
     #Forming aircraft
@@ -148,11 +153,24 @@ def PrintPlane(plane,CLK):
     tmp.putalpha(127)
     imgb = Image.alpha_composite(imgb, tmp)
     imgb = imgb.resize((2000,800))
-    imgb.save(str(CLK)+".png")
+    imgb.save("./png/"+str(CLK)+".png")
+
 
 # Report
-print("Total Time is:" + str(main()))
+shutil.rmtree('./png/')#delete folder
+pathlib.Path('./png/').mkdir(parents=True, exist_ok=True)#make folder
 
+print("Total Time is:" + str(main()))#run
+
+#save .gif
+images = []
+file_names = glob.glob('./png/*.png')
+file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+for filename in file_names:
+    images.append(io.imread(filename))
+io.mimsave('rnd.gif', images, duration = 0.1)
+
+# Data collection
 #ave = []
 #for i in range(100):
     #ave.append(main())
