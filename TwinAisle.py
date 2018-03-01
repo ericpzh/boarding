@@ -15,11 +15,11 @@ import glob
 ##INPUT##
 RowSide = 3
 RowCen = 4
-RowNum = 34
+RowNum = 32
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
 ts_ave = 10
 ts_std = 5
-reflashRate = 1000
+reflashRate = 100
 #########
 
 def main():
@@ -72,8 +72,8 @@ def main():
         if (int(plane[len(plane)-1][row + 1]) == 0 and not float(plane[len(plane)-1][row]).is_integer()):
             plane[len(plane)-1][row + 1] = plane[len(plane)-1][row]
             plane[len(plane)-1][row] = 0
-      if(borading_idx < len(Queue) and int(plane[0][0]) == 0):#new_arrival
-        next = int(round(math.modf(Queue[borading_idx])[0] * 10))
+      if(borading_idx < len(Queue) and (int(plane[0][0]) == 0)):#new_arrival
+        next = int(round(math.modf(Queue[borading_idx])[0] * 100))
         if (next <= RowSide or (next > RowSide and next <= RowSide + RowCen and np.random.uniform(0,1,1)[0] < 0.5)):
             plane[0][0] = Queue[borading_idx]
         else:
@@ -144,45 +144,68 @@ def PrintPlane(plane,CLK):
             div += str(CLK)
     output += (str(div)  + '\n')
     #print(output)
-    img = PIL.Image.new("RGBA", (((RowSide*2+RowCen)+2)*50,(RowNum+1)*50), color=0)
+    img = PIL.Image.new("RGBA", (((RowSide*2+RowCen)+2)*50,(RowNum+1)*50+500), color=0)
     for i in range(((RowSide*2+RowCen)+2)):
         for j in range((RowNum+1)):
             string = ret[i][j]
             if(string == "-"):
                 for x in range(50):
                     for y in range (50):
-                        img.putpixel((i*50+x,j*50+y),(255, 255, 255))
+                        if(j < 14):
+                            img.putpixel((i*50+x,j*50+y),(255, 255, 255))
+                        elif (j > 25):
+                            img.putpixel((i * 50 + x, j * 50 + y + 410), (255, 255, 255))
+                        else:
+                            img.putpixel((i * 50 + x, j * 50 + y + 210), (255, 255, 255))
             elif(string == "o"):
                 for x in range(-25,25):
                     for y in range(-25,25):
                         if ((x)**2+(y)**2 <= 225):
-                            img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (51, 102, 255))
+                            if (j < 14):
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (51, 102, 255))
+                            elif (j > 25):
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (51, 102, 255))
+                            else:
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (51, 102, 255))
                         else:
-                            img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (255, 255, 255))
+                            if (j < 14):
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (255, 255, 255))
+                            elif (j > 25):
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (255, 255, 255))
+                            else:
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (255, 255, 255))
             else:
                 for x in range(-25,25):
                     for y in range(-25,25):
                         if ((x ) ** 2 + (y ) ** 2 <= 225):
-                            img.putpixel((i*50+x+ 25,j*50+y+ 25),(0, 0, 102))
+                            if (j < 14):
+                                img.putpixel((i*50+x+ 25,j*50+y+ 25),(0, 0, 102))
+                            elif (j > 25):
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (0, 0, 102))
+                            else:
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (0, 0, 102))
                         else:
-                            img.putpixel((i * 50 + x+ 25, j * 50 + y+ 25), (255, 255, 255))
+                            if (j < 14):
+                                img.putpixel((i * 50 + x+ 25, j * 50 + y+ 25), (255, 255, 255))
+                            elif (j > 25):
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (255, 255, 255))
+                            else:
+                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (255, 255, 255))
     img2 = img.rotate(90,expand=1)
-    img2.save("./png2/"+str(CLK)+".png")
-    '''
-    img2 = img2.resize(((RowNum+1)*50,((RowSide*2+RowCen)+2)*50))
     imgb = Image.open("BGA380.png")
     imgb = imgb.convert("RGBA")
+    imgb = imgb.resize((3820,1000))
     tmp = Image.new('RGBA', imgb.size, (0, 0, 0, 0))
-    tmp.paste(img2, (435, 285))
+    tmp.paste(img2, (1115, 166))
     tmp.putalpha(127)
     imgb = Image.alpha_composite(imgb, tmp)
-    imgb = imgb.resize((2000,800))
-    imgb.save("./png/"+str(CLK)+".png")
-    '''
+    imgb = imgb.resize((4000,1000))
+    imgb.save("./png2/"+str(CLK)+".png")
+
 
 # Report
-#shutil.rmtree('./png2/')#delete folder
-#pathlib.Path('./png2/').mkdir(parents=True, exist_ok=True)#make folder
+shutil.rmtree('./png2/')#delete folder
+pathlib.Path('./png2/').mkdir(parents=True, exist_ok=True)#make folder
 
 print("Total Time is:" + str(main()))#run
 
