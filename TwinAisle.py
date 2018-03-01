@@ -14,12 +14,12 @@ import glob
 
 ##INPUT##
 RowSide = 3
-RowCen = 3
-RowNum = 9
+RowCen = 4
+RowNum = 34
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
-ts_ave = 1
-ts_std = 0
-reflashRate = 1
+ts_ave = 10
+ts_std = 5
+reflashRate = 1000
 #########
 
 def main():
@@ -27,14 +27,13 @@ def main():
     Queue = []
     for row in range(1,(RowSide*2+RowCen)+1):
       for col in range(1,RowNum+1):
-        Queue.append(col+row*0.1)
+        Queue.append((col+row*0.01))
     for i in range(NoShow):
       Queue.pop(np.random.randint(0,len(Queue)))
     Queue.sort()
-
     #Random process
-    Queue = simple_rnd(Queue)
-    #Queue = group(Queue,5)
+    #Queue = simple_rnd(Queue)
+    Queue = group(Queue,5)
     #Queue = rev(Queue)
     #Queue = pos(Queue)
 
@@ -44,13 +43,12 @@ def main():
     #Borading process
     borading_idx = 0
     CLK = 0
-    passenger = len(Queue)
-    while np.count_nonzero(plane == 1) != passenger or list(plane[0]).count(0) != len(plane[0]) or list(plane[len(plane)-1]).count(0) != len(plane[0]):
+    while borading_idx < len(Queue)-1 or list(plane[0]).count(0) < len(list(plane[0])) or list(plane[len(plane)-1]).count(0) < len(list(plane[0])):
       for row in range(RowNum+1):#update_borading
         #Left Isle
         isle1 = float(plane[0][row])
         if(int(isle1) == row and int(isle1) != 0 and not isle1.is_integer()):#is_this_row
-          seat = int(round(math.modf(isle1)[0]*10))
+          seat = int(round(math.modf(isle1)[0]*100))
           plane[seat][row] = 1
           plane[0][row] = int(round(np.random.normal(ts_ave,ts_std,1)[0]))
         elif(isle1.is_integer() and isle1 > 0):#is_waiting
@@ -60,7 +58,7 @@ def main():
         #Right Isle
         isle2 = float(plane[len(plane)-1][row])
         if (int(isle2) == row and int(isle2) != 0 and not isle2.is_integer()):  # is_this_row
-            seat = int(round(math.modf(isle2)[0] * 10))
+            seat = int(round(math.modf(isle2)[0] * 100))
             plane[seat][row] = 1
             plane[len(plane)-1][row] = int(round(np.random.normal(ts_ave, ts_std, 1)[0]))
         elif (isle2.is_integer() and isle2 > 0):  # is_waiting
@@ -142,13 +140,12 @@ def PrintPlane(plane,CLK):
     for i in range(RowNum*5):
         div += "-"
         if(i == int(RowNum*5/2)):
-            div += "A350-900 Time:"
+            div += "A380 Time:"
             div += str(CLK)
     output += (str(div)  + '\n')
-    print(output)
-    '''
-    img = PIL.Image.new("RGBA", (((RowSide*2+RowCen)+1)*50,(RowNum+1)*50), color=0)
-    for i in range(((RowSide*2+RowCen)+1)):
+    #print(output)
+    img = PIL.Image.new("RGBA", (((RowSide*2+RowCen)+2)*50,(RowNum+1)*50), color=0)
+    for i in range(((RowSide*2+RowCen)+2)):
         for j in range((RowNum+1)):
             string = ret[i][j]
             if(string == "-"):
@@ -170,8 +167,10 @@ def PrintPlane(plane,CLK):
                         else:
                             img.putpixel((i * 50 + x+ 25, j * 50 + y+ 25), (255, 255, 255))
     img2 = img.rotate(90,expand=1)
-    img2 = img2.resize(((RowNum+1)*50-50,((RowSide*2+RowCen)+1)*50-30))
-    imgb = Image.open("BG.png")
+    img2.save("./png2/"+str(CLK)+".png")
+    '''
+    img2 = img2.resize(((RowNum+1)*50,((RowSide*2+RowCen)+2)*50))
+    imgb = Image.open("BGA380.png")
     imgb = imgb.convert("RGBA")
     tmp = Image.new('RGBA', imgb.size, (0, 0, 0, 0))
     tmp.paste(img2, (435, 285))
@@ -182,20 +181,20 @@ def PrintPlane(plane,CLK):
     '''
 
 # Report
-#shutil.rmtree('./png/')#delete folder
-#pathlib.Path('./png/').mkdir(parents=True, exist_ok=True)#make folder
+#shutil.rmtree('./png2/')#delete folder
+#pathlib.Path('./png2/').mkdir(parents=True, exist_ok=True)#make folder
 
 print("Total Time is:" + str(main()))#run
 
 #save .gif
-'''
+
 images = []
-file_names = glob.glob('./png/*.png')
+file_names = glob.glob('./png2/*.png')
 file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
-io.mimsave('rnd.gif', images, duration = 0.1)
-'''
+io.mimsave('380.gif', images, duration = 0.1)
+
 # Data collection
 #ave = []
 #for i in range(100):
