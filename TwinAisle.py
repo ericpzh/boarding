@@ -19,7 +19,7 @@ RowNum = 32
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
 ts_ave = 10
 ts_std = 5
-reflashRate = 100
+reflashRate = 5
 #########
 
 def main():
@@ -216,7 +216,7 @@ file_names = glob.glob('./png2/*.png')
 file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
-io.mimsave('380.gif', images, duration = 0.1)
+io.mimsave('380.gif', images, fps = 60)
 
 # Data collection
 #ave = []

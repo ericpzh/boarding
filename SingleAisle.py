@@ -168,7 +168,7 @@ file_names = glob.glob('./png/*.png')
 file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
-io.mimsave('rnd.gif', images, duration = 0.1)
+io.mimsave('rnd.gif', images, fps = 60)
 
 # Data collection
 #ave = []
