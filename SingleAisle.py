@@ -33,7 +33,8 @@ def main():
 
     #Random process
     #Queue = simple_rnd(Queue)
-    Queue = group(Queue,5)
+    #Queue = group(Queue,5)
+    Queue = altgroup(Queue,5,2)
     #Queue = rev(Queue)
     #Queue = pos(Queue)
 
@@ -44,6 +45,7 @@ def main():
     borading_idx = 0
     CLK = 0
     while np.count_nonzero(plane == 1) < RowMax*RowNum-NoShow or list(plane[0]).count(0) <= RowNum:
+      CLK += 1
       for row in range(RowNum+1):#update_borading
         isle = float(plane[0][row])
         if(int(isle) == row and int(isle) != 0 and not isle.is_integer()):#is_this_row
@@ -61,12 +63,11 @@ def main():
       if(borading_idx < len(Queue) and int(plane[0][0]) == 0):#new_arrival
         plane[0][0] = Queue[borading_idx]
         borading_idx += 1
-      CLK += 1
       if(CLK%reflashRate==0):
           PrintPlane(plane,CLK)
     return(CLK)
 
-#Random Processes
+###############Random Processes###############
 #1) All random
 def simple_rnd(Queue):
     rnd.shuffle(Queue)
@@ -74,7 +75,7 @@ def simple_rnd(Queue):
 
 #2) Reverse N-Groups
 def group(Queue,N):
-    n = int(round(len(Queue)/N))
+    n = int(round(len(Queue) / N))
     ls = []
     for i in range(0, len(Queue), n):
         ls.append(Queue[i:i + n])
@@ -86,6 +87,7 @@ def group(Queue,N):
             ret.append(j)
     return ret[::-1]
 
+
 #3) Reverse order
 def rev(Queue):
     return Queue[::-1]
@@ -93,6 +95,27 @@ def rev(Queue):
 #4) Postive order
 def pos(Queue):
     return Queue
+
+#5) Alternating Groups
+def altgroup(Queue,N,alt):
+    n = int(round(len(Queue) / N))
+    ls = []
+    for i in range(0, len(Queue), n):
+        ls.append(Queue[i:i + n])
+    ls = ls[::-1]
+    templs = []
+    i = 0
+    while len(templs) < len(ls):
+        templs.append(ls[i])
+        i = (i+alt)%len(ls)
+    for i in templs:
+        rnd.shuffle(i)
+    ret = []
+    for i in templs:
+        for j in i:
+            ret.append(j)
+    return ret
+#############################################
 
 # Print
 def PrintPlane(plane,CLK):
@@ -168,7 +191,7 @@ file_names = glob.glob('./png/*.png')
 file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
-io.mimsave('rnd.gif', images, fps = 60)
+io.mimsave('737.gif', images, fps = 10)
 
 # Data collection
 #ave = []

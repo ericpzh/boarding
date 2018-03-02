@@ -19,7 +19,7 @@ RowNum = 32
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
 ts_ave = 10
 ts_std = 5
-reflashRate = 5
+reflashRate = 100
 #########
 
 def main():
@@ -33,7 +33,8 @@ def main():
     Queue.sort()
     #Random process
     #Queue = simple_rnd(Queue)
-    Queue = group(Queue,5)
+    #Queue = group(Queue,5)
+    Queue = altgroup(Queue,5,2)
     #Queue = rev(Queue)
     #Queue = pos(Queue)
 
@@ -84,7 +85,7 @@ def main():
           PrintPlane(plane,CLK)
     return(CLK)
 
-#Random Processes
+###############Random Processes###############
 #1) All random
 def simple_rnd(Queue):
     rnd.shuffle(Queue)
@@ -92,7 +93,7 @@ def simple_rnd(Queue):
 
 #2) Reverse N-Groups
 def group(Queue,N):
-    n = int(round(len(Queue)/N))
+    n = int(round(len(Queue) / N))
     ls = []
     for i in range(0, len(Queue), n):
         ls.append(Queue[i:i + n])
@@ -104,6 +105,7 @@ def group(Queue,N):
             ret.append(j)
     return ret[::-1]
 
+
 #3) Reverse order
 def rev(Queue):
     return Queue[::-1]
@@ -111,6 +113,27 @@ def rev(Queue):
 #4) Postive order
 def pos(Queue):
     return Queue
+
+#5) Alternating Groups
+def altgroup(Queue,N,alt):
+    n = int(round(len(Queue) / N))
+    ls = []
+    for i in range(0, len(Queue), n):
+        ls.append(Queue[i:i + n])
+    ls = ls[::-1]
+    templs = []
+    i = 0
+    while len(templs) < len(ls):
+        templs.append(ls[i])
+        i = (i+alt)%len(ls)
+    for i in templs:
+        rnd.shuffle(i)
+    ret = []
+    for i in templs:
+        for j in i:
+            ret.append(j)
+    return ret
+#############################################
 
 # Print
 def PrintPlane(plane,CLK):
@@ -199,7 +222,7 @@ def PrintPlane(plane,CLK):
     tmp.paste(img2, (1115, 166))
     tmp.putalpha(127)
     imgb = Image.alpha_composite(imgb, tmp)
-    imgb = imgb.resize((4000,1000))
+    imgb = imgb.resize((2000,500))
     imgb.save("./png2/"+str(CLK)+".png")
 
 
@@ -216,7 +239,7 @@ file_names = glob.glob('./png2/*.png')
 file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
-io.mimsave('380.gif', images, fps = 60)
+io.mimsave('380.gif', images, fps = 10)
 
 # Data collection
 #ave = []
