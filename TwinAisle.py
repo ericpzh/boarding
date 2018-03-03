@@ -17,20 +17,39 @@ RowSide = 3
 RowCen = 4
 RowNum = 32
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
+Buffer = [(14, 4), (26, 4)]
 ts_ave = 10
 ts_std = 5
 reflashRate = 100
+for i in Buffer:
+    RowNum += i[1]
 #########
 
 def main():
     #Forming Queue
     Queue = []
+    for i in range(1, len(Buffer)):
+        num = Buffer[1][1]
+        for j in range(1,i):
+            num += Buffer[j][1]
+        Buffer[i] = (Buffer[i][0] + num,Buffer[i][1])
+    BufferNum = []
+    for i in Buffer:
+        for j in range(i[1]):
+            BufferNum.append(i[0]+j)
     for row in range(1,(RowSide*2+RowCen)+1):
-      for col in range(1,RowNum+1):
-        Queue.append((col+row*0.01))
+        for col in range(1,RowNum+1):
+            Queue.append((col+row*0.01))
+    i = 0
+    while i < len(Queue):
+        if (int(round(Queue[i])) in BufferNum):
+            Queue.pop(i)
+        else:
+            i += 1
     for i in range(NoShow):
-      Queue.pop(np.random.randint(0,len(Queue)))
+        Queue.pop(np.random.randint(0,len(Queue)))
     Queue.sort()
+
     #Random process
     #Queue = simple_rnd(Queue)
     #Queue = group(Queue,5)
@@ -174,46 +193,21 @@ def PrintPlane(plane,CLK):
             if(string == "-"):
                 for x in range(50):
                     for y in range (50):
-                        if(j < 14):
-                            img.putpixel((i*50+x,j*50+y),(255, 255, 255))
-                        elif (j > 25):
-                            img.putpixel((i * 50 + x, j * 50 + y + 410), (255, 255, 255))
-                        else:
-                            img.putpixel((i * 50 + x, j * 50 + y + 210), (255, 255, 255))
+                        img.putpixel((i*50+x,j*50+y),(255, 255, 255))
             elif(string == "o"):
                 for x in range(-25,25):
                     for y in range(-25,25):
                         if ((x)**2+(y)**2 <= 225):
-                            if (j < 14):
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (51, 102, 255))
-                            elif (j > 25):
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (51, 102, 255))
-                            else:
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (51, 102, 255))
+                            img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (51, 102, 255))
                         else:
-                            if (j < 14):
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (255, 255, 255))
-                            elif (j > 25):
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (255, 255, 255))
-                            else:
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (255, 255, 255))
+                            img.putpixel((i * 50 + x + 25, j * 50 + y + 25), (255, 255, 255))
             else:
                 for x in range(-25,25):
                     for y in range(-25,25):
                         if ((x ) ** 2 + (y ) ** 2 <= 225):
-                            if (j < 14):
-                                img.putpixel((i*50+x+ 25,j*50+y+ 25),(0, 0, 102))
-                            elif (j > 25):
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (0, 0, 102))
-                            else:
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (0, 0, 102))
+                            img.putpixel((i*50+x+ 25,j*50+y+ 25),(0, 0, 102))
                         else:
-                            if (j < 14):
-                                img.putpixel((i * 50 + x+ 25, j * 50 + y+ 25), (255, 255, 255))
-                            elif (j > 25):
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 410), (255, 255, 255))
-                            else:
-                                img.putpixel((i * 50 + x + 25, j * 50 + y + 25 + 210), (255, 255, 255))
+                            img.putpixel((i * 50 + x+ 25, j * 50 + y+ 25), (255, 255, 255))
     img2 = img.rotate(90,expand=1)
     imgb = Image.open("BGA380.png")
     imgb = imgb.convert("RGBA")
