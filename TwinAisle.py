@@ -18,9 +18,9 @@ RowCen = 4
 RowNum = 32
 NoShow = int(round(np.random.normal((RowSide*2+RowCen)*RowNum*0.1,5,1)[0]))
 Buffer = [(14, 4), (26, 4)]
-ts_ave = 10
-ts_std = 5
-reflashRate = 100
+ts_ave = 15
+ts_std = 10
+reflashRate = 10000
 for i in Buffer:
     RowNum += i[1]
 #########
@@ -53,7 +53,7 @@ def main():
     #Random process
     #Queue = simple_rnd(Queue)
     #Queue = group(Queue,5)
-    Queue = altgroup(Queue,5,2)
+    Queue = altgroup(Queue,5,3)
     #Queue = rev(Queue)
     #Queue = pos(Queue)
 
@@ -70,7 +70,7 @@ def main():
         if(int(isle1) == row and int(isle1) != 0 and not isle1.is_integer()):#is_this_row
           seat = int(round(math.modf(isle1)[0]*100))
           plane[seat][row] = 1
-          plane[0][row] = int(round(np.random.normal(ts_ave,ts_std,1)[0]))
+          plane[0][row] = max(0,int(round(np.random.normal(ts_ave,ts_std,1)[0])))
         elif(isle1.is_integer() and isle1 > 0):#is_waiting
           plane[0][row] = int(plane[0][row]) - 1
         elif(isle1.is_integer() and isle1 < 0):#rounding_error
@@ -219,7 +219,7 @@ def PrintPlane(plane,CLK):
     imgb = imgb.resize((2000,500))
     imgb.save("./png2/"+str(CLK)+".png")
 
-
+'''
 # Report
 shutil.rmtree('./png2/')#delete folder
 pathlib.Path('./png2/').mkdir(parents=True, exist_ok=True)#make folder
@@ -234,12 +234,12 @@ file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
 io.mimsave('380.gif', images, fps = 10)
-
+'''
 # Data collection
-#ave = []
-#for i in range(100):
-    #ave.append(main())
-#print(sum(ave)/100)
+ave = []
+for i in range(100):
+    ave.append(main())
+print(sum(ave)/100)
 
 
 

@@ -16,9 +16,9 @@ import glob
 RowMax = 6
 RowNum = 29
 NoShow = int(round(np.random.normal(RowMax*RowNum*0.1,5,1)[0]))
-ts_ave = 10
-ts_std = 5
-reflashRate = 100
+ts_ave = 15
+ts_std = 10
+reflashRate = 10
 #########
 
 def main():
@@ -34,7 +34,7 @@ def main():
     #Random process
     #Queue = simple_rnd(Queue)
     #Queue = group(Queue,5)
-    Queue = altgroup(Queue,5,2)
+    Queue = altgroup(Queue,29,5)
     #Queue = rev(Queue)
     #Queue = pos(Queue)
 
@@ -51,7 +51,7 @@ def main():
         if(int(isle) == row and int(isle) != 0 and not isle.is_integer()):#is_this_row
           seat = int(round(math.modf(isle)[0]*10))
           plane[seat][row] = 1
-          plane[0][row] = int(round(np.random.normal(ts_ave,ts_std,1)[0]))
+          plane[0][row] = max(0,int(round(np.random.normal(ts_ave,ts_std,1)[0])))
         elif(isle.is_integer() and isle > 0):#is_waiting
           plane[0][row] = int(plane[0][row]) - 1
         elif(isle.is_integer() and isle < 0):#rounding_error
@@ -106,7 +106,7 @@ def altgroup(Queue,N,alt):
     templs = []
     i = 0
     while len(templs) < len(ls):
-        templs.append(ls[i])
+        templs.insert(len(templs),ls[i])
         i = (i+alt)%len(ls)
     for i in templs:
         rnd.shuffle(i)
@@ -196,6 +196,7 @@ io.mimsave('737.gif', images, fps = 10)
 # Data collection
 #ave = []
 #for i in range(100):
+    #print(str(i)+"%")
     #ave.append(main())
 #print(sum(ave)/100)
 
