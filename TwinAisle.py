@@ -240,6 +240,7 @@ ave = []
 for i in range(100):
     ave.append(main())
 print(sum(ave)/100)
+np.savetxt("Twin.csv", np.array(ave), delimiter=",")
 
 
 

@@ -18,7 +18,7 @@ RowNum = 29
 NoShow = int(round(np.random.normal(RowMax*RowNum*0.1,5,1)[0]))
 ts_ave = 15
 ts_std = 10
-reflashRate = 10
+reflashRate = 100000
 #########
 
 def main():
@@ -199,6 +199,7 @@ io.mimsave('737.gif', images, fps = 10)
     #print(str(i)+"%")
     #ave.append(main())
 #print(sum(ave)/100)
+#np.savetxt("Single.csv", np.array(ave), delimiter=",")
 
 
 
