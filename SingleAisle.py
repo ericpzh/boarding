@@ -17,8 +17,8 @@ RowMax = 6
 RowNum = 29
 NoShow = int(round(np.random.normal(RowMax*RowNum*0.1,5,1)[0]))
 ts_ave = 15
-ts_std = 10
-reflashRate = 100000
+ts_std = 5
+reflashRate = 20
 #########
 
 def main():
@@ -34,7 +34,8 @@ def main():
     #Random process
     #Queue = simple_rnd(Queue)
     #Queue = group(Queue,5)
-    Queue = altgroup(Queue,29,5)
+    Queue = altgroup(Queue,5,4)
+    #Queue = altrow(Queue,7)
     #Queue = rev(Queue)
     #Queue = pos(Queue)
 
@@ -115,6 +116,28 @@ def altgroup(Queue,N,alt):
         for j in i:
             ret.append(j)
     return ret
+
+#6) Alternating Rows
+def altrow(Queue,alt):
+    ls = []
+    ls1 = []
+    for i in range(RowNum):
+        ls.append([])
+        ls1.append([])
+    for i in Queue:
+        ls[int(i)-1].append(i)
+    ls = ls[::-1]
+    for i in ls:
+        rnd.shuffle(i)
+    ls1.append(ls[0])
+    for i in range(1,RowNum):
+        ls1[i] = ls[(RowNum - i * alt)%RowNum]
+    ls1 = ls1[::-1]
+    ret = []
+    for i in ls1:
+        for j in i:
+            ret.append(j)
+    return ret
 #############################################
 
 # Print
@@ -192,14 +215,15 @@ file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 for filename in file_names:
     images.append(io.imread(filename))
 io.mimsave('737.gif', images, fps = 10)
-
+'''
 # Data collection
-#ave = []
-#for i in range(100):
-    #print(str(i)+"%")
-    #ave.append(main())
-#print(sum(ave)/100)
-#np.savetxt("Single.csv", np.array(ave), delimiter=",")
+ave = []
+for i in range(1000):
+    print(str(i/10)+"%")
+    ave.append(main())
+print(sum(ave)/1000)
+np.savetxt("Single.csv", np.array(ave), delimiter=",")
+'''
 
 
 
